@@ -25,28 +25,31 @@ find_package(rclcpp REQUIRED)
 find_package(yaml_cpp_vendor REQUIRED)
 
 if("$ENV{IGNITION_VERSION}" STREQUAL "citadel")
-  find_package(ignition-gazebo3 REQUIRED)
-  set(IGN_GAZEBO_VER ${ignition-gazebo3_VERSION_MAJOR})
+  set(GZ_SIM_PKG ignition-gazebo3)
+  set(GZ_PLUGIN_PKG ignition-plugin1)
   message(STATUS "Compiling against Ignition Citadel")
-
 elseif("$ENV{IGNITION_VERSION}" STREQUAL "edifice")
-  find_package(ignition-gazebo5 REQUIRED)
-  set(IGN_GAZEBO_VER ${ignition-gazebo5_VERSION_MAJOR})
+  set(GZ_SIM_PKG ignition-gazebo5)
+  set(GZ_PLUGIN_PKG ignition-plugin1)
   message(STATUS "Compiling against Ignition Edifice")
-
 elseif("$ENV{IGNITION_VERSION}" STREQUAL "fortress")
-  find_package(ignition-gazebo6 REQUIRED)
-  set(IGN_GAZEBO_VER ${ignition-gazebo6_VERSION_MAJOR})
+  set(GZ_SIM_PKG ignition-gazebo6)
+  set(GZ_PLUGIN_PKG ignition-plugin1)
   message(STATUS "Compiling against Ignition Fortress")
-
+elseif("$ENV{IGNITION_VERSION}" STREQUAL "garden")
+  set(GZ_SIM_PKG gz-sim7)
+  set(GZ_PLUGIN_PKG gz-plugin2)
+  message(STATUS "Compiling against Ignition Garden")    
 else()
-  find_package(ignition-gazebo6 REQUIRED)
-  set(IGN_GAZEBO_VER ${ignition-gazebo6_VERSION_MAJOR})
+  set(GZ_SIM_PKG ignition-gazebo6)
+  set(GZ_PLUGIN_PKG ignition-plugin1)
   message(STATUS "Compiling against Ignition Fortress")
 endif()
 
-find_package(ignition-plugin1 REQUIRED)
-set(IGN_PLUGIN_VER ${ignition-plugin1_VERSION_MAJOR})
+find_package(${GZ_SIM_PKG} REQUIRED)
+find_package(${GZ_PLUGIN_PKG} REQUIRED)
+
+
 
 include_directories(include)
 
@@ -55,9 +58,11 @@ add_library(${PROJECT_NAME}-system SHARED
 )
 
 target_link_libraries(${PROJECT_NAME}-system
-  ignition-gazebo${IGN_GAZEBO_VER}::core
-  ignition-plugin${IGN_PLUGIN_VER}::register
-)
+  ${GZ_SIM_PKG}::core
+  ${GZ_PLUGIN_PKG}::register
+  )
+
+
 ament_target_dependencies(${PROJECT_NAME}-system
   ament_index_cpp
   controller_manager
@@ -78,8 +83,9 @@ ament_target_dependencies(ign_hardware_plugins
   hardware_interface
   rclcpp
 )
+
 target_link_libraries(ign_hardware_plugins
-  ignition-gazebo${IGN_GAZEBO_VER}::core
+  ${GZ_SIM_PKG}::core
 )
 
 ## Install

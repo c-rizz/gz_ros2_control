@@ -165,7 +165,7 @@
     </plugin>
     <plugin
       filename="ignition-gazebo-imu-system"
-      name="ignition::gazebo::systems::Imu">
+      name="gz::sim::systems::Imu">
     </plugin>
   </gazebo>
 </robot>
