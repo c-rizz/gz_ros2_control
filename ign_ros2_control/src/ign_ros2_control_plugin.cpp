@@ -327,7 +327,7 @@ void IgnitionROS2ControlPlugin::Configure(
   }
 
   if (!rclcpp::ok()) {
-    rclcpp::init(static_cast<int>(argv.size()), argv.data());
+    rclcpp::init(static_cast<int>(argv.size()), argv.data(), rclcpp::InitOptions(), rclcpp::SignalHandlerOptions::None);
     std::string node_name = "ignition_ros_control";
     if (!controllerManagerPrefixNodeName.empty()) {
       node_name = controllerManagerPrefixNodeName + "_" + node_name;
